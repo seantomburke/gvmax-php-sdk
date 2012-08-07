@@ -18,6 +18,7 @@ class GVMax
 	
 	/**
 	 * Constructor that takes in the api token as a parameter
+	 * Forward your gvmax HTTP request to a page with this object
 	 *
 	 * @author Sean Thomas Burke <http://www.seantburke.com>
 	 * @param $api //Api from GVMax
@@ -26,6 +27,8 @@ class GVMax
 	function __construct($api)
 	{
 		$this->api = $api;
+		
+		// stores variables from gvmax HTTP POST
 		if($_POST)
 		{
 			$this->type = $_POST['type'];		
@@ -40,14 +43,22 @@ class GVMax
 	}
 	
 	/**
-	 * Send an SMS from 
+	 * Send an SMS
 	 *
 	 * @author Sean Thomas Burke <http://www.seantburke.com>
-	 * @param $api //Api from 
+	 * @param $number, $text //Api from 
 	 * @return JSON
 	 */
-	public function sms($text, $number)
+	public function sms($number, $text)
 	{
+		//TODO validate number
+		
+		//if the $number is an array, then send it to the group
+		if(is_array($number))
+		{
+			return $this->groupSMS($number, $text);
+		}
+		
 		//REST URL for sending sms
 		$url = 'https://www.gvmax.com/api/send';
 		
@@ -81,13 +92,13 @@ class GVMax
 	
 	
 	/**
-	 * function description
+	 * will send an SMS to a group
 	 *
 	 * @author Sean Thomas Burke <http://www.seantburke.com>
-	 * @param $api //Api from 
+	 * @param $array_numbers, $text //Api from 
 	 * @return JSON
 	 */
-	public function groupSMS($array_numbers, $text)
+	private function groupSMS($array_numbers, $text)
 	{
 		foreach($array_numbers as $number)
 		{
@@ -97,10 +108,10 @@ class GVMax
 	}
 	
 	/**
-	 * function description
+	 * call method will place a call to a phone
 	 *
 	 * @author Sean Thomas Burke <http://www.seantburke.com>
-	 * @param $api //Api from 
+	 * @param $number //
 	 * @return JSON
 	 */
 	 
@@ -108,19 +119,6 @@ class GVMax
 	 {
 	 //TODO Implement this method
 	 }
-	 
-	 /**
-	  * function description
-	  *
-	  * @author Sean Thomas Burke <http://www.seantburke.com>
-	  * @param $api //Api from 
-	  * @return JSON
-	  */
-	  
-	  public function getNumber()
-	  {
-	  	return $this->number;
-	  }
 }
 
 ?>
