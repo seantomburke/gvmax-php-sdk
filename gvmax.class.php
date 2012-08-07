@@ -11,6 +11,10 @@
 class GVMax
 {
 	private $api; 	//this is the api token from GVMax, set with constructor
+	public $type;
+	public $number;
+	public $text;
+	public $error;
 	
 	/**
 	 * Constructor that takes in the api token as a parameter
@@ -22,6 +26,17 @@ class GVMax
 	function __construct($api)
 	{
 		$this->api = $api;
+		if($_POST)
+		{
+			$this->type = $_POST['type'];		
+			$this->number = $_POST['number'];
+			$this->text = $_POST['text'];
+				
+			if($_POST['type'] == 'VM')
+			{
+				$this->link = $_POST['link'];
+			}
+		}
 	}
 	
 	/**
@@ -31,7 +46,7 @@ class GVMax
 	 * @param $api //Api from 
 	 * @return JSON
 	 */
-	public function sms($number, $text)
+	public function sms($text, $number)
 	{
 		//REST URL for sending sms
 		$url = 'https://www.gvmax.com/api/send';
@@ -54,6 +69,7 @@ class GVMax
 		
 		//set the url, number of POST vars, POST data
 		curl_setopt($ch,CURLOPT_URL,$url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch,CURLOPT_POST,count($fields));
 		curl_setopt($ch,CURLOPT_POSTFIELDS,$fields_string);
 		$result = curl_exec($ch);
@@ -71,11 +87,11 @@ class GVMax
 	 * @param $api //Api from 
 	 * @return JSON
 	 */
-	public function groupSms($array_numbers, $text)
+	public function groupSMS($array_numbers, $text)
 	{
 		foreach($array_numbers as $number)
 		{
-			$result .= $this->sendSMS($number,$text);
+			$result .= $this->sms($number,$text);
 		}
 		return $result;
 	}
@@ -92,6 +108,19 @@ class GVMax
 	 {
 	 //TODO Implement this method
 	 }
+	 
+	 /**
+	  * function description
+	  *
+	  * @author Sean Thomas Burke <http://www.seantburke.com>
+	  * @param $api //Api from 
+	  * @return JSON
+	  */
+	  
+	  public function getNumber()
+	  {
+	  	return $this->number;
+	  }
 }
 
 ?>
