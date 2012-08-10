@@ -15,6 +15,7 @@ class GVMax
 	public $number;
 	public $text;
 	public $error;
+	public $result;
 	
 	/**
 	 * Constructor that takes in the api token as a parameter
@@ -86,8 +87,10 @@ class GVMax
 		$result = curl_exec($ch);
 		curl_close($ch);
 		
+		$this->result = json_decode($result, true);
+		
 		//return the GVMax return {$number: ok}
-		return $result;
+		return $this->result;
 	}
 	
 	
@@ -102,9 +105,10 @@ class GVMax
 	{
 		foreach($array_numbers as $number)
 		{
-			$result .= $this->sms($number,$text);
+			$result[$i++] = $this->sms($number,$text);
 		}
-		return $result;
+		$this->result = $result;
+		return $this->result;
 	}
 	
 	/**
